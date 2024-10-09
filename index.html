@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Generator</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2C3E50;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #34495E;
+        }
+
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .gradient-option {
+            width: 120px;
+            height: 60px;
+            margin-right: 10px;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .banner-preview {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .banner-content img {
+            height: 100%;
+            width: auto;
+            max-width: 35%; /* Limit the image width */
+            border-radius: 5px;
+        }
+
+        .banner-content .promo-text {
+            width: 55%;
+            padding-left: 30px;
+            font-size: 1.4em;
+            color: #fff;
+        }
+
+        .banner-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .custom-size-fields {
+            display: none;
+            gap: 15px;
+        }
+
+        .custom-size-fields input {
+            width: calc(50% - 10px); /* Split custom size input equally */
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #8B6CF7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #6F4BD8;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Create Your Banner</h1>
+
+    <form id="bannerForm">
+        <label for="card-image">Card Image (Upload):</label>
+        <input type="file" id="card-image" accept="image/*" required>
+
+        <label for="banner-bg">Choose Banner Background:</label>
+        <div id="gradientOptions">
+            <div class="gradient-option" style="background: linear-gradient(to right, #ff7e5f, #feb47b);" onclick="setBackground('linear-gradient(to right, #ff7e5f, #feb47b)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #6a11cb, #2575fc);" onclick="setBackground('linear-gradient(to right, #6a11cb, #2575fc)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #fbd3e9, #bb377d);" onclick="setBackground('linear-gradient(to right, #fbd3e9, #bb377d)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #f12711, #f5af19);" onclick="setBackground('linear-gradient(to right, #f12711, #f5af19)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #36d1dc, #5b86e5);" onclick="setBackground('linear-gradient(to right, #36d1dc, #5b86e5)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #2b5876, #4e4376);" onclick="setBackground('linear-gradient(to right, #2b5876, #4e4376)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #56ab2f, #a8e063);" onclick="setBackground('linear-gradient(to right, #56ab2f, #a8e063)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #0f2027, #2c5364);" onclick="setBackground('linear-gradient(to right, #0f2027, #2c5364)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #1a2980, #26d0ce);" onclick="setBackground('linear-gradient(to right, #1a2980, #26d0ce)')"></div>
+            <div class="gradient-option" style="background: linear-gradient(to right, #ff6a00, #ee0979);" onclick="setBackground('linear-gradient(to right, #ff6a00, #ee0979)')"></div>
+        </div>
+
+        <label for="promo-text">Promotion Text:</label>
+        <input type="text" id="promo-text" placeholder="Enter your promotion text here" required>
+
+        <div class="banner-controls">
+            <label for="banner-size">Select Banner Size:</label>
+            <select id="banner-size" onchange="showCustomSizeFields()">
+                <option value="desktop">Desktop</option>
+                <option value="mobile">Mobile</option>
+                <option value="tablet">Tablet</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+
+        <div class="custom-size-fields" id="customSizeFields">
+            <input type="text" id="custom-width" placeholder="Width (px)">
+            <input type="text" id="custom-height" placeholder="Height (px)">
+        </div>
+
+        <button type="button" onclick="generateBanner()">Generate Banner</button>
+        <button type="button" onclick="downloadBanner()">Download Banner</button>
+    </form>
+
+    <div class="banner-preview" id="bannerPreview">
+        <div class="banner-content" id="bannerContent">
+            <img id="cardImagePreview" src="" alt="Card Image" style="display:none;">
+            <div class="promo-text" id="promoTextPreview">Your promo text here</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const bannerBg = document.getElementById('banner-bg');
+    const promoText = document.getElementById('promo-text');
+    const cardImage = document.getElementById('card-image');
+    const cardImagePreview = document.getElementById('cardImagePreview');
+    const bannerPreview = document.getElementById('bannerPreview');
+    const promoTextPreview = document.getElementById('promoTextPreview');
+    const bannerSize = document.getElementById('banner-size');
+    const customSizeFields = document.getElementById('customSizeFields');
+
+    // Show custom size fields if custom option is selected
+    function showCustomSizeFields() {
+        if (bannerSize.value === 'custom') {
+            customSizeFields.style.display = 'flex';
+        } else {
+            customSizeFields.style.display = 'none';
+        }
+    }
+
+    function setBackground(gradient) {
+        bannerPreview.style.background = gradient;
+    }
+
+    function generateBanner() {
+        // Update promotion text
+        promoTextPreview.textContent = promoText.value;
+
+        // Handle card image upload
+        const file = cardImage.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                cardImagePreview.src = e.target.result;
+                cardImagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle banner size
+        if (bannerSize.value === 'custom') {
+            const width = document.getElementById('custom-width').value;
+            const height = document.getElementById('custom-height').value;
+            bannerPreview.style.width = `${width}px`;
+            bannerPreview.style.height = `${height}px`;
+        } else if (bannerSize.value === 'desktop') {
+            bannerPreview.style.width = '1200px';
+        } else if (bannerSize.value === 'mobile') {
+            bannerPreview.style.width = '350px';
+            bannerPreview.style.height = '150px';
+        } else if (bannerSize.value === 'tablet') {
+            bannerPreview.style.width = '768px';
+            bannerPreview.style.height = '200px';
+        }
+    }
+
+    // Function to download the banner as an image
+    function downloadBanner() {
+        const banner = document.getElementById('bannerPreview');
+
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        const width = banner.offsetWidth;
+        const height = banner.offsetHeight;
+
+        // Set the canvas size to match the banner size
+        canvas.width = width;
+        canvas.height = height;
+
+        // Get the canvas context
+        const ctx = canvas.getContext('2d');
+
+        // Draw the banner background (gradient)
+        const background = window.getComputedStyle(banner).backgroundImage;
+        ctx.fillStyle = '#fff'; // Default background color
+        ctx.fillRect(0, 0, width, height);
+
+        if (background) {
+            const img = new Image();
+            img.src = background.slice(5, -2); // Remove "url()" around the image
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Draw the card image on the left side of the banner
+                const cardImage = document.getElementById('cardImagePreview');
+                if (cardImage.src) {
+                    const cardImg = new Image();
+                    cardImg.src = cardImage.src;
+                    cardImg.onload = function () {
+                        ctx.drawImage(cardImg, 20, 20, cardImg.width, cardImg.height);
+
+                        // Draw the promotion text on the right side
+                        ctx.fillStyle = '#fff'; // Promotion text color
+                        ctx.font = '20px Poppins';
+                        ctx.fillText(document.getElementById('promoTextPreview').textContent, cardImg.width + 40, 50);
+
+                        // Convert the canvas to an image and download it
+                        const link = document.createElement('a');
+                        link.download = 'banner.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    };
+                }
+            };
+        }
+    }
+</script>
+
+</body>
+</html>
